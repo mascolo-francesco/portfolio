@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Francesco Mascolo · Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-header">
+        <div class="logo">francesco</div>
+        <nav class="nav-links">
+          <a href="#about">About</a>
+          <a href="#work">Work</a>
+          <a href="#skills">Skills</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </header>
+
+      <main>
+        <section class="hero reveal" id="top">
+          <figure class="hero__portrait">
+            <img src="./assets/photos/image.png" alt="Pixel portrait of Francesco Mascolo" />
+          </figure>
+
+          <div class="hero__intro">
+            <span class="hero__prompt">francesco@portfolio:~$</span>
+            <div class="hero__typing typewriter-block" data-autostart="true">
+              <span class="typewriter" data-lines='["Hi, I’m Francesco","Full Stack Developer"]'></span>
+              <span class="cursor" aria-hidden="true"></span>
+            </div>
+          </div>
+
+          <div class="hero__links">
+            <a class="link-tag" href="#about">[ About me ]</a>
+            <a class="link-tag" href="#work">[ View work ]</a>
+            <a class="link-tag" href="#skills">[ Skills ]</a>
+            <a class="link-tag" href="#contact">[ Contact ]</a>
+          </div>
+        </section>
+
+        <section class="section reveal" id="about">
+          <h2 class="section__title">// About me</h2>
+          <div class="terminal-window">
+            <div class="terminal-window__header">
+              <span></span><span></span><span></span>
+              <p>francesco — -zsh</p>
+            </div>
+            <div class="terminal-window__body">
+            <div class="about-terminal typewriter-block" data-autostart="false"><span class="typewriter" data-lines='[
+"francesco@portfolio:~$ cat about.txt",
+"I am a full-stack developer based in Italy. I enjoy launching all kinds of web products, including SaaS and various types of startups: social products, artificial intelligence projects, engineering tools, and more.",
+"I work with clean, scalable architectures and code, and I create refined and appealing user interfaces and visual designs.",
+"On the frontend, I use semantic HTML, CSS architecture, and modern JavaScript.",
+"",
+"On the backend, I integrate services with Python and PHP and manage service implementation. I work closely with designers and subject matter experts to deliver as requested or even better."
+]'></span><span class="cursor" aria-hidden="true"></span></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section reveal" id="work">
+          <h2 class="section__title">// Featured work</h2>
+
+          <article class="project-card">
+            <header>// Project Atlas</header>
+            <p>Piattaforma SaaS per monitoraggio asset fintech, con dashboard in tempo reale e notifiche personalizzate.</p>
+            <p class="project-card__meta">Stack: Next.js · TypeScript · Supabase · Tailwind</p>
+            <a class="inline-link" href="#" target="_blank" rel="noreferrer">Open case study →</a>
+          </article>
+
+          <article class="project-card">
+            <header>// Devnotes</header>
+            <p>Knowledge base collaborativa ispirata a Notion, ottimizzata per team tecnici e documentazione API.</p>
+            <p class="project-card__meta">Stack: Remix · Prisma · PostgreSQL · Playwright</p>
+            <a class="inline-link" href="#" target="_blank" rel="noreferrer">Visit live demo →</a>
+          </article>
+        </section>
+
+        <section class="section reveal" id="skills">
+          <h2 class="section__title">// Skills</h2>
+
+          <div class="skills-grid">
+            <div class="skill-group">
+              <h3>Languages</h3>
+              <ul>
+                <li>TypeScript</li>
+                <li>JavaScript (ES2023)</li>
+                <li>Python</li>
+                <li>SQL</li>
+              </ul>
+            </div>
+            <div class="skill-group">
+              <h3>Frameworks</h3>
+              <ul>
+                <li>Next.js · Remix</li>
+                <li>React · Astro</li>
+                <li>NestJS · Fastify</li>
+              </ul>
+            </div>
+            <div class="skill-group">
+              <h3>Tooling</h3>
+              <ul>
+                <li>Vite · Turborepo</li>
+                <li>Vitest · Playwright</li>
+                <li>Storybook · Chromatic</li>
+              </ul>
+            </div>
+            <div class="skill-group">
+              <h3>Infrastructure</h3>
+              <ul>
+                <li>Docker · Fly.io</li>
+                <li>AWS (Lambda, S3, RDS)</li>
+                <li>GitHub Actions</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="section reveal contact" id="contact">
+          <h2 class="section__title">// Contact</h2>
+          <p class="contact__lead">Let’s build something. Scrivimi o connettiti sui social.</p>
+
+          <div class="contact__links">
+            <a href="mailto:hello@francescomascolo.dev">hello@francescomascolo.dev</a>
+            <a href="#" target="_blank" rel="noreferrer">LinkedIn</a>
+            <a href="#" target="_blank" rel="noreferrer">GitHub</a>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>© <span id="year"></span> Francesco Mascolo. Crafted with intent.</span>
+      </footer>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
