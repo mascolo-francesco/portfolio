@@ -1,0 +1,8 @@
+# macOS
+.DS_Store
+
+# VS Code workspace settings
+.vscode/
+
+# Local docs not committed
+PORTFOLIO.md
