@@ -567,3 +567,30 @@ a:focus-visible {
     margin-right: -16px;
   }
 }
+
+@media (max-width: 560px) {
+  .terminal-window__body {
+    padding: 14px 20px 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-header__bar {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    font-size: 12px;
+  }
+
+  .nav-links a {
+    padding-bottom: 0;
+  }
+}

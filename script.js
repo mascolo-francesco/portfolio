@@ -71,7 +71,9 @@ typewriterBlocks.forEach((block) => {
   typewriterInstances.set(block, instance);
 
   // For the about terminal, pre-measure the final height so the
-  // window doesn't grow while typing. This keeps the shell "fixed".
+  // window doesn't grow while typing on larger screens. On very
+  // small viewports we allow it to expand naturally to avoid
+  // clipping the final lines.
   if (block.classList.contains("about-terminal") && Array.isArray(lines)) {
     let measuring = false;
     const measure = () => {
@@ -83,8 +85,16 @@ typewriterBlocks.forEach((block) => {
       block.style.removeProperty("height");
       block.style.removeProperty("min-height");
       block.style.removeProperty("max-height");
+      block.style.removeProperty("flex-shrink");
       if (bodyEl) {
         bodyEl.style.removeProperty("min-height");
+      }
+
+      const shouldLockHeight = window.innerWidth > 560;
+
+      if (!shouldLockHeight) {
+        measuring = false;
+        return;
       }
 
       const ghost = document.createElement("span");
@@ -98,7 +108,15 @@ typewriterBlocks.forEach((block) => {
       ghost.remove();
 
       if (height > 0) {
-        const extraSpace = window.innerWidth <= 640 ? 156 : 64;
+        const docClientHeight =
+          document.documentElement && document.documentElement.clientHeight
+            ? document.documentElement.clientHeight
+            : 0;
+        const viewportHeight = Math.max(window.innerHeight || 0, docClientHeight);
+        const isNarrowWidth = window.innerWidth <= 720;
+        const extraSpace = isNarrowWidth
+          ? Math.max(180, Math.min(320, Math.round(viewportHeight * 0.28)))
+          : 64;
         const roundedHeight = Math.ceil(height + extraSpace);
         block.style.height = `${roundedHeight}px`;
         block.style.minHeight = `${roundedHeight}px`;
@@ -131,6 +149,12 @@ typewriterBlocks.forEach((block) => {
       // Store observer for possible future use
       instance.resizeObserver = ro;
     }
+
+    const handleResize = () => measure();
+    window.addEventListener("resize", handleResize, { passive: true });
+    instance.resizeListener = handleResize;
+
+    instance.measure = measure;
   }
 });
 
