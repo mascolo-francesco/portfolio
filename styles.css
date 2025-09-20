@@ -9,6 +9,8 @@
   --transition: 180ms ease;
   --shadow-soft: 0 32px 60px rgba(6, 8, 12, 0.42);
   --header-offset: 120px;
+  --header-bg: rgba(41, 45, 50, 0.92);
+  --bar-inset: 12px; /* lateral inset for header bar */
 }
 
 html {
@@ -60,14 +62,53 @@ a:focus-visible {
   position: sticky;
   top: 0;
   z-index: 10;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: block;
   margin-bottom: 40px;
-  padding: 20px 0 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(45, 48, 53, 0.92);
+  padding: 18px 0 16px;
+}
+
+.site-header::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 100%;
+  background: var(--header-bg);
+  border-bottom: none;
   backdrop-filter: blur(6px);
+}
+
+.site-header__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 24px;
+  margin: 0 var(--bar-inset);
+  background: rgba(41, 45, 50, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(6, 8, 12, 0.28), inset 0 0 0 1px rgba(255,255,255,0.04);
+  backdrop-filter: blur(10px) saturate(135%);
+  -webkit-backdrop-filter: blur(10px) saturate(135%);
+  overflow: hidden;
+  position: relative;
+  transition: padding var(--transition), border-radius var(--transition), background var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+
+.site-header.is-condensed .site-header__bar {
+  padding: 8px 20px;
+  border-radius: 18px;
+  background: rgba(41, 45, 50, 0.34);
+}
+
+/* Shrink wrapper padding too for a clearer compress effect */
+.site-header.is-condensed {
+  padding: 10px 0 8px;
+  --bar-inset: 28px;
 }
 
 .logo {
@@ -80,7 +121,7 @@ a:focus-visible {
 
 .nav-links {
   display: flex;
-  gap: 20px;
+  gap: 18px;
   font-family: "JetBrains Mono", monospace;
   font-size: 14px;
 }
@@ -112,6 +153,53 @@ a:focus-visible {
 .nav-links a:focus-visible::after {
   transform: scaleX(1);
   transform-origin: left;
+}
+
+@media (max-width: 640px) {
+  .site-header__bar {
+    padding: 10px 16px;
+  }
+  .site-header.is-condensed .site-header__bar {
+    padding: 6px 14px;
+  }
+  .site-header {
+    --bar-inset: 8px;
+  }
+  .site-header.is-condensed {
+    --bar-inset: 14px;
+  }
+  .nav-links {
+    gap: 12px;
+    font-size: 13px;
+  }
+  .logo {
+    font-size: 15px;
+  }
+}
+
+/* Liquid glass shimmer overlay */
+.site-header__bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(120% 60% at 20% 0%, rgba(255,255,255,0.08), rgba(255,255,255,0.0) 60%),
+    radial-gradient(100% 50% at 80% 100%, rgba(255,255,255,0.05), rgba(255,255,255,0.0) 60%);
+  background-size: 200% 200%, 200% 200%;
+  background-position: 0% 0%, 100% 100%;
+  mix-blend-mode: overlay;
+  animation: liquidShift 18s ease-in-out infinite alternate;
+}
+
+@keyframes liquidShift {
+  0% { background-position: 0% 0%, 100% 100%; }
+  50% { background-position: 40% 60%, 60% 40%; }
+  100% { background-position: 100% 0%, 0% 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header__bar::after { animation: none; }
 }
 
 .hero {
@@ -468,5 +556,14 @@ a:focus-visible {
     animation-iteration-count: 1 !important;
     transition-duration: 1ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* Mobile tweaks */
+@media (max-width: 640px) {
+  /* Slightly wider terminal window by bleeding into section padding */
+  .terminal-window {
+    margin-left: -16px;
+    margin-right: -16px;
   }
 }

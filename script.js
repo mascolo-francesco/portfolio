@@ -1,5 +1,6 @@
-const DEFAULT_SPEED = 60;
-const DEFAULT_DELAY = 450;
+// Slightly faster typing + line delay
+const DEFAULT_SPEED = 45;
+const DEFAULT_DELAY = 320;
 
 const typewriterBlocks = Array.from(
   document.querySelectorAll(".typewriter-block")
@@ -19,6 +20,40 @@ typewriterBlocks.forEach((block) => {
     lines = [];
   }
 
+  // Replace dynamic placeholders with real runtime values
+  const formatLastLogin = () => {
+    const now = new Date();
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const pad = (n) => String(n).padStart(2, "0");
+    const day = days[now.getDay()];
+    const mon = months[now.getMonth()];
+    const date = pad(now.getDate());
+    const hh = pad(now.getHours());
+    const mm = pad(now.getMinutes());
+    const ss = pad(now.getSeconds());
+    return `Last login: ${day} ${mon} ${date} ${hh}:${mm}:${ss} on console`;
+  };
+
+  if (Array.isArray(lines) && lines.length > 0) {
+    if (typeof lines[0] === "string" && /LAST_LOGIN|__LAST_LOGIN__/i.test(lines[0])) {
+      lines[0] = formatLastLogin();
+    }
+  }
+
   const instance = {
     block,
     textEl,
@@ -34,6 +69,69 @@ typewriterBlocks.forEach((block) => {
 
   cursor.style.visibility = block.dataset.autostart === "true" ? "visible" : "hidden";
   typewriterInstances.set(block, instance);
+
+  // For the about terminal, pre-measure the final height so the
+  // window doesn't grow while typing. This keeps the shell "fixed".
+  if (block.classList.contains("about-terminal") && Array.isArray(lines)) {
+    let measuring = false;
+    const measure = () => {
+      if (measuring) return;
+      measuring = true;
+
+      const bodyEl = block.closest(".terminal-window__body");
+
+      block.style.removeProperty("height");
+      block.style.removeProperty("min-height");
+      block.style.removeProperty("max-height");
+      if (bodyEl) {
+        bodyEl.style.removeProperty("min-height");
+      }
+
+      const ghost = document.createElement("span");
+      ghost.className = "typewriter";
+      ghost.style.cssText =
+        "position:absolute;visibility:hidden;pointer-events:none;white-space:pre-wrap;width:100%;left:0;right:0;";
+      ghost.textContent = lines.join("\n");
+      block.appendChild(ghost);
+
+      const height = ghost.offsetHeight;
+      ghost.remove();
+
+      if (height > 0) {
+        const extraSpace = window.innerWidth <= 640 ? 156 : 64;
+        const roundedHeight = Math.ceil(height + extraSpace);
+        block.style.height = `${roundedHeight}px`;
+        block.style.minHeight = `${roundedHeight}px`;
+        block.style.maxHeight = `${roundedHeight}px`;
+        block.style.flexShrink = "0";
+
+        if (bodyEl) {
+          const styles = window.getComputedStyle(bodyEl);
+          const padTop = parseFloat(styles.paddingTop) || 0;
+          const padBottom = parseFloat(styles.paddingBottom) || 0;
+          bodyEl.style.minHeight = `${roundedHeight + padTop + padBottom}px`;
+        }
+      }
+
+      measuring = false;
+    };
+
+    // Run after fonts are ready for accurate metrics
+    if (document.fonts && typeof document.fonts.ready?.then === "function") {
+      document.fonts.ready.then(() => measure());
+    }
+    // Fallbacks: next frame and on load
+    requestAnimationFrame(measure);
+    window.addEventListener("load", measure, { once: true });
+
+    // Re-measure if container width changes
+    if (typeof ResizeObserver === "function") {
+      const ro = new ResizeObserver(() => measure());
+      ro.observe(block);
+      // Store observer for possible future use
+      instance.resizeObserver = ro;
+    }
+  }
 });
 
 function renderTypewriter(instance) {
@@ -157,4 +255,8 @@ if (siteHeader) {
   }
   window.addEventListener("resize", updateHeaderOffset, { passive: true });
   window.addEventListener("load", updateHeaderOffset, { once: true });
+
+  // Keep header in compact mode at all times
+  siteHeader.classList.add("is-condensed");
+  updateHeaderOffset();
 }
