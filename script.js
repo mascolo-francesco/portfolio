@@ -284,3 +284,76 @@ if (siteHeader) {
   siteHeader.classList.add("is-condensed");
   updateHeaderOffset();
 }
+
+// Modal logic for case studies
+document.addEventListener("DOMContentLoaded", function () {
+  const modal = document.getElementById("case-modal");
+  if (!modal) return;
+  const overlay = modal.querySelector(".modal__overlay");
+  const body = modal.querySelector(".modal__body");
+  const titleEl = modal.querySelector(".modal__title");
+  const closeButtons = modal.querySelectorAll("[data-modal-dismiss]");
+
+  let lastFocused = null;
+  let activeItem = null;
+
+  function openModal({ title, contentEl, sourceItem }) {
+    lastFocused = document.activeElement;
+    titleEl.textContent = title || "Case study";
+    body.innerHTML = "";
+    if (contentEl) {
+      const bodyEl = contentEl.querySelector('.timeline__details-body');
+      const toClone = bodyEl || contentEl;
+      const clone = toClone.cloneNode(true);
+      clone.style.display = "block";
+      body.appendChild(clone);
+    }
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+    if (sourceItem) {
+      sourceItem.classList.add("is-active");
+      activeItem = sourceItem;
+    }
+    // Focus heading for a11y
+    setTimeout(() => {
+      titleEl.focus?.();
+    }, 0);
+  }
+
+  function closeModal() {
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.removeProperty("overflow");
+    if (activeItem) {
+      activeItem.classList.remove("is-active");
+      activeItem = null;
+    }
+    if (lastFocused && typeof lastFocused.focus === "function") {
+      lastFocused.focus();
+    }
+  }
+
+  // Wire up open buttons
+  const caseButtons = document.querySelectorAll("[data-case-toggle]");
+  caseButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const key = btn.getAttribute("data-case-toggle");
+      const details = document.getElementById(`case-${key}`);
+      const item = btn.closest(".timeline__item");
+      if (!details || !item) return;
+
+      const title = item.querySelector(".timeline__title")?.textContent?.trim();
+      openModal({ title, contentEl: details, sourceItem: item });
+    });
+  });
+
+  // Close handlers
+  closeButtons.forEach((cb) => cb.addEventListener("click", closeModal));
+  overlay?.addEventListener("click", closeModal);
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.classList.contains("is-open")) {
+      closeModal();
+    }
+  });
+});
